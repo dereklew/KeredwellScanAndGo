@@ -10,15 +10,10 @@ import java.util.ArrayList;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 18/8/2017.
- */
-
 public class C_BPartnerDBAdapter extends DBAdapter {
     private static final String TAG = makeLogTag(C_BPartnerDBAdapter.class);
 
     public static final String COLUMN_C_BPARTNER_ID = "_c_bpartner_id";
-    public static final String COLUMN_C_BP_GROUP_ID = "_c_bp_group_id";
     public static final String COLUMN_NAME = "_name";
 
     public static final String DATABASE_TABLE = "c_bpartner";
@@ -46,7 +41,6 @@ public class C_BPartnerDBAdapter extends DBAdapter {
 
         ContentValues initialValues = new ContentValues();
         initialValues.put(COLUMN_C_BPARTNER_ID, c_bPartner.getC_BPartner_ID());
-        initialValues.put(COLUMN_C_BP_GROUP_ID, c_bPartner.getC_BP_Group_ID());
         initialValues.put(COLUMN_NAME, c_bPartner.getName());
 
         return mDb.insert(DATABASE_TABLE, null, initialValues);
@@ -62,43 +56,6 @@ public class C_BPartnerDBAdapter extends DBAdapter {
         open();
 
         return mDb.delete(DATABASE_TABLE, COLUMN_C_BPARTNER_ID + "=" + c_bpartner_id, null) > 0; //$NON-NLS-1$
-    }
-
-    /**
-     * Return a List<Customer>  over the list of all customers in the database
-     *
-     * @param groupid
-     * @return List<Customer>  over all customers
-     */
-    public ArrayList<C_BPartner> getAllC_BPartnersByGroupID(long groupid) {
-        open();
-
-        ArrayList<C_BPartner> c_bPartners = new ArrayList<C_BPartner>();
-
-        String selectQuery = "SELECT (SELECT COUNT(0) from " + DATABASE_TABLE + " t1 where t1." + COLUMN_NAME + " >= t2." + COLUMN_NAME +
-                " ) as 'RowNumber', t2." + COLUMN_C_BPARTNER_ID + ", " + COLUMN_NAME +  ", " + C_BPartner_LocationDBAdapter.COLUMN_PHONE
-                +  ", " + C_BPartner_LocationDBAdapter.COLUMN_C_BPARTNER_LOCATION_ID +   ", " + C_LocationDBAdapter.COLUMN_ADDRESS +  ", " + C_LocationDBAdapter.COLUMN_POSTAL
-                + " FROM "
-                + DATABASE_TABLE + " t2 INNER JOIN " + C_BPartner_LocationDBAdapter.DATABASE_TABLE + " t3 ON t2." + COLUMN_C_BPARTNER_ID + " = t3." + C_BPartner_LocationDBAdapter.COLUMN_C_BPARTNER_ID
-                + " INNER JOIN " + C_LocationDBAdapter.DATABASE_TABLE + " t4 ON t3." + C_BPartner_LocationDBAdapter.COLUMN_C_LOCATION_ID + " = t4." + C_LocationDBAdapter.COLUMN_C_LOCATION_ID
-                + " WHERE " + COLUMN_C_BP_GROUP_ID + " = " + groupid + " ORDER BY " + COLUMN_NAME;
-
-        Cursor mCursor = mDb.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        while (mCursor.moveToNext()){
-            C_BPartner c_bpartner = new C_BPartner();
-            c_bpartner.setRowNumber(Integer.parseInt(mCursor.getString(0)));
-            c_bpartner.setC_BPartner_ID(Long.parseLong(mCursor.getString(1)));
-            c_bpartner.setName(mCursor.getString(2));
-            c_bpartner.setPhone(mCursor.getString(3));
-            c_bpartner.setC_BPartner_Location_ID(Long.parseLong(mCursor.getString(4)));
-            c_bpartner.setAddress(mCursor.getString(5));
-            c_bpartner.setPostal(mCursor.getString(6));
-            c_bPartners.add(c_bpartner);
-        }
-        close();
-        return c_bPartners;
     }
 
     /**
@@ -223,7 +180,6 @@ public class C_BPartnerDBAdapter extends DBAdapter {
 
         ContentValues args = new ContentValues();
         args.put(COLUMN_NAME, c_bpartner.getName());
-        args.put(COLUMN_C_BP_GROUP_ID, c_bpartner.getC_BP_Group_ID());
 
         return mDb.update(DATABASE_TABLE, args, COLUMN_C_BPARTNER_ID + "=" + c_bpartner.getC_BPartner_ID(), null) >0;
     }

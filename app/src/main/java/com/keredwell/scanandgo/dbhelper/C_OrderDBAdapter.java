@@ -12,10 +12,6 @@ import java.util.Date;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 18/8/2017.
- */
-
 public class C_OrderDBAdapter extends DBAdapter {
     private static final String TAG = makeLogTag(C_OrderDBAdapter.class);
 

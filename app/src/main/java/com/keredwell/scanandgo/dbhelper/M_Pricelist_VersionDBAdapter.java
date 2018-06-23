@@ -89,6 +89,34 @@ public class M_Pricelist_VersionDBAdapter extends DBAdapter {
     }
 
     /**
+     * Return a Cursor positioned at the customer that matches the given rowId
+     * @param m_picelist_id
+     * @return Cursor positioned to matching customer, if found, else null
+     */
+    public M_Pricelist_Version getM_Pricelist_VersionByPricelist_ID(long m_picelist_id) {
+        open();
+
+        M_Pricelist_Version m_productPrice = new M_Pricelist_Version();
+
+        Cursor mCursor =
+                mDb.query(true, DATABASE_TABLE, new String[] { COLUMN_M_PRICELIST_VERSION_ID, COLUMN_M_PRICELIST_ID },
+                        COLUMN_M_PRICELIST_ID + "=" + m_picelist_id,
+                        null, null, null, null, null);
+
+        if (mCursor != null && mCursor.moveToFirst()) {
+            m_productPrice.setM_Pricelist_Version_ID(Long.parseLong(mCursor.getString(0)));
+            m_productPrice.setM_Pricelist_ID(Long.parseLong(mCursor.getString(1)));
+            m_productPrice.setRowNumber(0);
+        }
+        else {
+            close();
+            return null;
+        }
+        close();
+        return m_productPrice;
+    }
+
+    /**
      * Update the customer.
      *
      * @param m_pricelist_version

@@ -8,10 +8,6 @@ import com.keredwell.scanandgo.data.M_ProductPrice;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 18/8/2017.
- */
-
 public class M_ProductPriceDBAdapter extends DBAdapter {
     private static final String TAG = makeLogTag(M_ProductPriceDBAdapter.class);
 

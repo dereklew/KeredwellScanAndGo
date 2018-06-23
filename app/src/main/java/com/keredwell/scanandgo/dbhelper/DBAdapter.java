@@ -5,11 +5,11 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
+import com.keredwell.scanandgo.data.AD_Org;
+import com.keredwell.scanandgo.data.C_BP_BankAccount;
+import com.keredwell.scanandgo.data.M_Pricelist;
 
-/**
- * Created by Derek on 18/8/2017.
- */
+import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
 public class DBAdapter {
     private static final String TAG = makeLogTag(DBAdapter.class);
@@ -18,10 +18,27 @@ public class DBAdapter {
 
     public static final int DATABASE_VERSION = 1;
 
-    private static final String CREATE_TABLE_C_BP_GROUP = "CREATE TABLE " +
-            C_BP_GroupDBAdapter.DATABASE_TABLE + "("
-            + C_BP_GroupDBAdapter.COLUMN_C_BP_GROUP_ID + " INTEGER PRIMARY KEY, "
-            + C_BP_GroupDBAdapter.COLUMN_NAME + " TEXT " + ");";
+    private static final String CREATE_TABLE_AD_ORG = "CREATE TABLE " +
+            AD_OrgDBAdapter.DATABASE_TABLE + "("
+            + AD_OrgDBAdapter.COLUMN_AD_ORG_ID + " INTEGER PRIMARY KEY, "
+            + AD_OrgDBAdapter.COLUMN_VALUE + " TEXT, "
+            + AD_OrgDBAdapter.COLUMN_NAME + " TEXT " + ");";
+
+    private static final String CREATE_TABLE_C_BP_BANKACCOUNT = "CREATE TABLE " +
+            C_BP_BankAccountDBAdapter.DATABASE_TABLE + "("
+            + C_BP_BankAccountDBAdapter.COLUMN_C_BP_BANKACCOUNT_ID + " INTEGER PRIMARY KEY, "
+            + C_BP_BankAccountDBAdapter.COLUMN_C_BPARTNER_ID + " INTEGER, "
+            + C_BP_BankAccountDBAdapter.COLUMN_ACCOUNTNO + " TEXT, "
+            + C_BP_BankAccountDBAdapter.COLUMN_CREDITCARDTYPE + " TEXT, "
+            + C_BP_BankAccountDBAdapter.COLUMN_CREDITCARDNUMBER + " TEXT, "
+            + C_BP_BankAccountDBAdapter.COLUMN_CREDITCARDVV + " TEXT, "
+            + C_BP_BankAccountDBAdapter.COLUMN_CREDITCARDEXPMM + " INTEGER, "
+            + C_BP_BankAccountDBAdapter.COLUMN_CREDITCARDEXPYY + " INTEGER, "
+            + C_BP_BankAccountDBAdapter.COLUMN_A_NAME + " TEXT, "
+            + C_BP_BankAccountDBAdapter.COLUMN_A_STREET + " TEXT, "
+            + C_BP_BankAccountDBAdapter.COLUMN_A_CITY + " TEXT, "
+            + C_BP_BankAccountDBAdapter.COLUMN_A_ZIP + " TEXT, "
+            + C_BP_BankAccountDBAdapter.COLUMN_A_COUNTRY + " TEXT " + ");";
 
     private static final String CREATE_TABLE_C_BPARTNER_LOCATION = "CREATE TABLE " +
             C_BPartner_LocationDBAdapter.DATABASE_TABLE + "("
@@ -33,7 +50,6 @@ public class DBAdapter {
     private static final String CREATE_TABLE_C_BPARTNER = "CREATE TABLE " +
             C_BPartnerDBAdapter.DATABASE_TABLE + "("
             + C_BPartnerDBAdapter.COLUMN_C_BPARTNER_ID + " INTEGER PRIMARY KEY, "
-            + C_BPartnerDBAdapter.COLUMN_C_BP_GROUP_ID + " INTEGER, "
             + C_BPartnerDBAdapter.COLUMN_NAME + " TEXT " + ");";
 
     private static final String CREATE_TABLE_C_LOCATION = "CREATE TABLE " +
@@ -48,17 +64,12 @@ public class DBAdapter {
             + C_TaxDBAdapter.COLUMN_NAME + " TEXT, "
             + C_TaxDBAdapter.COLUMN_RATE + " REAL " + ");";
 
-    private static final String CREATE_TABLE_M_PRODUCT_CATEGORY = "CREATE TABLE " +
-            M_Product_CategoryDBAdapter.DATABASE_TABLE + "("
-            + M_Product_CategoryDBAdapter.COLUMN_M_PRODUCT_CATEGORY_ID + " INTEGER PRIMARY KEY, "
-            + M_Product_CategoryDBAdapter.COLUMN_NAME + " TEXT " + ");";
-
     private static final String CREATE_TABLE_M_PRODUCT = "CREATE TABLE " +
             M_ProductDBAdapter.DATABASE_TABLE + "("
             + M_ProductDBAdapter.COLUMN_M_PRODUCT_ID + " INTEGER PRIMARY KEY, "
             + M_ProductDBAdapter.COLUMN_NAME + " TEXT, "
+            + M_ProductDBAdapter.COLUMN_UPC + " TEXT, "
             + M_ProductDBAdapter.COLUMN_C_UOM_ID + " INTEGER, "
-            + M_ProductDBAdapter.COLUMN_M_PRODUCT_CATEGORY_ID + " INTEGER, "
             + M_ProductDBAdapter.COLUMN_M_LOCATOR_ID + " INTEGER " + ");";
 
     private static final String CREATE_TABLE_M_PRODUCTPRICE = "CREATE TABLE " +
@@ -68,6 +79,12 @@ public class DBAdapter {
             + M_ProductPriceDBAdapter.COLUMN_PRICELIST + " INTEGER, "
             + M_ProductPriceDBAdapter.COLUMN_PRICESTD + " INTEGER, "
             + M_ProductPriceDBAdapter.COLUMN_PRICELIMIT + " INTEGER " + ");";
+
+    private static final String CREATE_TABLE_M_PRICELIST = "CREATE TABLE " +
+            M_PricelistDBAdapter.DATABASE_TABLE + "("
+            + M_PricelistDBAdapter.COLUMN_M_PRICELIST_ID + " INTEGER PRIMARY KEY, "
+            + M_PricelistDBAdapter.COLUMN_AD_ORG_ID + " INTEGER, "
+            + M_PricelistDBAdapter.COLUMN_NAME + " TEXT " + ");";
 
     private static final String CREATE_TABLE_M_PRICELIST_VERSION = "CREATE TABLE " +
             M_Pricelist_VersionDBAdapter.DATABASE_TABLE + "("
@@ -170,14 +187,15 @@ public class DBAdapter {
         @Override
         public void onCreate(SQLiteDatabase db)
         {
-            db.execSQL(CREATE_TABLE_C_BP_GROUP);
+            db.execSQL(CREATE_TABLE_AD_ORG);
+            db.execSQL(CREATE_TABLE_C_BP_BANKACCOUNT);
             db.execSQL(CREATE_TABLE_C_BPARTNER_LOCATION);
             db.execSQL(CREATE_TABLE_C_BPARTNER);
             db.execSQL(CREATE_TABLE_C_LOCATION);
             db.execSQL(CREATE_TABLE_C_TAX);
-            db.execSQL(CREATE_TABLE_M_PRODUCT_CATEGORY);
             db.execSQL(CREATE_TABLE_M_PRODUCT);
             db.execSQL(CREATE_TABLE_M_PRODUCTPRICE);
+            db.execSQL(CREATE_TABLE_M_PRICELIST);
             db.execSQL(CREATE_TABLE_M_PRICELIST_VERSION);
             db.execSQL(CREATE_TABLE_M_LOCATOR);
             db.execSQL(CREATE_TABLE_C_ORDER);
@@ -187,14 +205,15 @@ public class DBAdapter {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
         {
-            db.execSQL("DROP TABLE IF EXISTS " + C_BP_GroupDBAdapter.DATABASE_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + AD_OrgDBAdapter.DATABASE_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + C_BP_BankAccountDBAdapter.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + C_BPartner_LocationDBAdapter.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + C_BPartnerDBAdapter.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + C_LocationDBAdapter.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + C_TaxDBAdapter.DATABASE_TABLE);
-            db.execSQL("DROP TABLE IF EXISTS " + M_Product_CategoryDBAdapter.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + M_ProductDBAdapter.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + M_ProductPriceDBAdapter.DATABASE_TABLE);
+            db.execSQL("DROP TABLE IF EXISTS " + M_PricelistDBAdapter.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + M_Pricelist_VersionDBAdapter.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + M_LocatorDBAdapter.DATABASE_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + C_OrderDBAdapter.DATABASE_TABLE);

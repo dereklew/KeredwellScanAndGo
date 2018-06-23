@@ -8,10 +8,6 @@ import com.keredwell.scanandgo.data.C_Location;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 18/8/2017.
- */
-
 public class C_LocationDBAdapter extends DBAdapter {
     private static final String TAG = makeLogTag(C_LocationDBAdapter.class);
 
