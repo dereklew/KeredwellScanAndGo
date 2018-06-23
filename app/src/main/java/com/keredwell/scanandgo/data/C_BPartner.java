@@ -4,16 +4,11 @@ import java.io.Serializable;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 14/8/2017.
- */
-
 public class C_BPartner implements Serializable {
     private static final String TAG = makeLogTag(C_BPartner.class);
 
     private long _c_bpartner_id;
     private long _c_bpartner_location_id;
-    private long _c_bp_group_id;
     private String _name;
     private String _phone;
     private String _address;
@@ -23,9 +18,8 @@ public class C_BPartner implements Serializable {
     public C_BPartner(){
     }
 
-    public C_BPartner(long c_bpartner_id, long c_bp_group_id, String name) {
+    public C_BPartner(long c_bpartner_id, String name) {
         this._c_bpartner_id = c_bpartner_id;
-        this._c_bp_group_id = c_bp_group_id;
         this._name = name;
     }
 
@@ -42,12 +36,6 @@ public class C_BPartner implements Serializable {
     public long getC_BPartner_Location_ID() {
         return this._c_bpartner_location_id;
     }
-
-    public void setC_BP_Group_ID(long c_bp_group_id) {
-        this._c_bp_group_id = c_bp_group_id;
-    }
-
-    public long getC_BP_Group_ID() { return this._c_bp_group_id; }
 
     public void setName(String name) {
         this._name = name;

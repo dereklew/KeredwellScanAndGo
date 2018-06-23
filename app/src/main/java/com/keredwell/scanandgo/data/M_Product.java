@@ -4,17 +4,13 @@ import java.io.Serializable;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 14/8/2017.
- */
-
 public class M_Product implements Serializable {
     private static final String TAG = makeLogTag(M_Product.class);
 
     private long _m_product_id;
     private String _name;
+    private String _upc;
     private long _c_uom_id;
-    private long _m_product_category_id;
     private long _m_locator_id;
     private long _m_pricelist_id;
     private int _pricelist;
@@ -25,11 +21,11 @@ public class M_Product implements Serializable {
     public M_Product(){
     }
 
-    public M_Product(long m_product_id, String name, long c_uom_id, long m_product_category_id, long m_locator_id) {
+    public M_Product(long m_product_id, String name, String upc, long c_uom_id, long m_product_category_id, long m_locator_id) {
         this._m_product_id = m_product_id;
         this._name = name;
+        this._upc = upc;
         this._c_uom_id = c_uom_id;
-        this._m_product_category_id = m_product_category_id;
         this._m_locator_id = m_locator_id;
     }
 
@@ -49,18 +45,20 @@ public class M_Product implements Serializable {
         return this._name;
     }
 
+    public void setUPC(String upc) {
+        this._upc = upc;
+    }
+
+    public String getUPC() {
+        return this._upc;
+    }
+
     public void setC_Uom_ID(long c_uom_id) {
         this._c_uom_id = c_uom_id;
     }
 
     public long getC_Uom_ID() {
         return this._c_uom_id;
-    }
-
-    public void setM_Product_Category_ID(long m_product_category_id) { this._m_product_category_id = m_product_category_id; }
-
-    public long getM_Product_Category_ID() {
-        return this._m_product_category_id;
     }
 
     public void setM_Locator_ID(long m_locator_id) {

@@ -4,10 +4,6 @@ import java.io.Serializable;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 14/8/2017.
- */
-
 public class User implements Serializable {
     private static final String TAG = makeLogTag(User.class);
 
