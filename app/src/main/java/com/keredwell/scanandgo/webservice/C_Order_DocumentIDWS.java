@@ -11,10 +11,6 @@ import org.ksoap2.serialization.SoapObject;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 25/11/2017.
- */
-
 public class C_Order_DocumentIDWS {
     private static final String TAG = makeLogTag(C_Order_DocumentIDWS.class);
 

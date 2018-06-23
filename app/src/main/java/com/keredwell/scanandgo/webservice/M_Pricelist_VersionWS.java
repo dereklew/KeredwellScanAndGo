@@ -20,15 +20,15 @@ import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 public class M_Pricelist_VersionWS {
     private static final String TAG = makeLogTag(M_Pricelist_VersionWS.class);
 
-    public static Boolean WSEvent(String mUser, String mPassword, Date lastUpdatedDate)
+    public static Boolean WSEvent(long m_pricelist_version_id, String mUser, String mPassword)
     {
         try{
-            SoapObject field = new SoapObject(PropUtil.getProperty("nameSpace"), "field");
-            field.addAttribute("column", "UpdatedDateTime");
-            field.addProperty("val", DateUtil.ConvertToString(lastUpdatedDate));
+            SoapObject M_Pricelist_Version_ID = new SoapObject(PropUtil.getProperty("nameSpace"), "field");
+            M_Pricelist_Version_ID.addAttribute("column", "M_Pricelist_Version_ID");
+            M_Pricelist_Version_ID.addProperty("val", String.valueOf(m_pricelist_version_id));
 
             SoapObject dataRow = new SoapObject(PropUtil.getProperty("nameSpace"), "DataRow");
-            dataRow.addSoapObject(field);
+            dataRow.addSoapObject(M_Pricelist_Version_ID);
 
             SoapObject modelCRUD = new SoapObject(PropUtil.getProperty("nameSpace"), "ModelCRUD");
             modelCRUD.addProperty("serviceType", PropUtil.getProperty("pricelistVersionServiceType"));

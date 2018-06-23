@@ -1,42 +1,29 @@
 package com.keredwell.scanandgo.ui.scanner;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
-import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.keredwell.scanandgo.ApplicationContext;
 import com.keredwell.scanandgo.R;
+
 import com.keredwell.scanandgo.data.C_BPartner;
 import com.keredwell.scanandgo.data.C_Order;
 import com.keredwell.scanandgo.data.C_OrderLine;
 import com.keredwell.scanandgo.data.C_Tax;
 import com.keredwell.scanandgo.data.M_Product;
 import com.keredwell.scanandgo.dbhelper.M_LocatorDBAdapter;
+import com.keredwell.scanandgo.dbhelper.M_ProductDBAdapter;
 import com.keredwell.scanandgo.ui.base.BaseActivity;
-import com.keredwell.scanandgo.ui.order.CashOrCreditDialogFragment;
-import com.keredwell.scanandgo.ui.order.CustomerListActivity;
-import com.keredwell.scanandgo.ui.order.OrderCheckoutActivity;
-import com.keredwell.scanandgo.ui.order.OrderListActivity;
-import com.keredwell.scanandgo.ui.order.OrderListFragment;
-import com.keredwell.scanandgo.ui.order.ProductListActivity;
-import com.keredwell.scanandgo.util.LogUtil;
 import com.keredwell.scanandgo.util.PropUtil;
 import com.keredwell.scanandgo.util.SharedPrefUtil;
+import com.keredwell.scanandgo.webservice.ItemScanWS;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -46,8 +33,7 @@ import java.util.Iterator;
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
 public class ItemScanActivity extends BaseActivity implements ItemScanFragment.Callback {
-    private static final String TAG = makeLogTag(OrderListActivity.class);
-    private static final String SCAN = "com.google.zxing.client.android";
+    private static final String TAG = makeLogTag(ItemScanActivity.class);
 
     private C_Order c_order = new C_Order();
     private ArrayList<C_OrderLine> c_orderLines = new ArrayList<>();
@@ -70,96 +56,55 @@ public class ItemScanActivity extends BaseActivity implements ItemScanFragment.C
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ScanBar ( view );
+                Intent intent = new Intent(ItemScanActivity.this, SimpleScannerActivity.class);
+                startActivityForResult(intent, 0);
             }
         });
-    }
-
-    // fucntion to scan barcode
-    public void ScanBar ( View view ) {
-        try {
-            //this intent is used to call start for bar code
-            Intent in = new Intent( SCAN );
-            in.putExtra( "SCAN_MODE", "PRODUCT_MODE" );
-            startActivityForResult( in, 0 );
-        } catch ( ActivityNotFoundException e) {
-            showDialog( ItemScanActivity.this,"No scanner found", "Download Scanner code Activity?"," Yes", "No" ).show();
-
-        }
-    }
-
-    private Dialog showDialog (final Activity act, CharSequence title, CharSequence message, CharSequence yes, CharSequence no ) {
-        // a subclass of dialog that can display buttons and message
-        AlertDialog.Builder download = new AlertDialog.Builder( act );
-        download.setTitle( title );
-        download.setMessage ( message );
-        download.setPositiveButton ( yes, new DialogInterface.OnClickListener ( ) {
-            @Override
-            public void onClick( DialogInterface dialog, int i ) {
-                // TODO Auto-generated method stub
-                //uri to download barcode scanner
-                Uri uri = Uri.parse( "market://search?q=pname:" + "com.google.zxing.client.android" );
-                Intent in = new Intent ( Intent.ACTION_VIEW, uri );
-                try {
-                    act.startActivity ( in );
-                } catch ( ActivityNotFoundException e) {
-                    LogUtil.logE(TAG, e.getMessage(), e);
-                }
-            }
-        });
-        download.setNegativeButton ( no, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick ( DialogInterface dialog, int i ) {
-                // TODO Auto-generated method stub
-            }
-        });
-        return download.show();
     }
 
     @Override
     protected void onActivityResult ( int requestCode, int resultCode, Intent in ) {
-        // TODO Auto-generated method stub
         if( requestCode == 0 ){
             if( resultCode == RESULT_OK ){
-                //use to get scan result
-                String contents = in.getStringExtra( "SCAN_RESULT" );
-                String format =  in.getStringExtra( "SCAN_RESULT_FORMAT" ) ;
-                Toast toast = Toast.makeText( this, "Content:" + contents + " Format:" + format, Toast.LENGTH_LONG );
-                toast.show();
-
-                //Todo
-
                 if (in != null) {
-                    M_Product product = (M_Product) in.getSerializableExtra("product");
-                    C_OrderLine orderItem = new C_OrderLine();
-                    orderItem.setM_Product_ID(product.getM_Product_ID());
+                    //use to get scan result
+                    String contents = in.getStringExtra("SCAN_RESULT");
+                    String format = in.getStringExtra("SCAN_RESULT_FORMAT");
+                    //Toast toast = Toast.makeText( this, "Content:" + contents + " Format:" + format, Toast.LENGTH_LONG );
+                    //toast.show();
+                    if (ItemScanWS.WSEvent(contents) == true) {
+                        M_ProductDBAdapter m_productDBAdapter = new M_ProductDBAdapter(ApplicationContext.getAppContext());
+                        M_Product product = m_productDBAdapter.getM_ProductByUPC(contents);
 
-                    if (product.getM_Locator_ID()  == 0) {
-                        orderItem.setM_Warehouse_ID(m_locatorDBAdapter.getM_Locator().getM_Warehouse_ID());
-                        orderItem.setM_Locator_ID(m_locatorDBAdapter.getM_Locator().getM_Locator_ID());
-                    }
-                    else {
-                        orderItem.setM_Warehouse_ID(m_locatorDBAdapter.getM_Locator(product.getM_Locator_ID()).getM_Warehouse_ID());
-                        orderItem.setM_Locator_ID(m_locatorDBAdapter.getM_Locator(product.getM_Locator_ID()).getM_Locator_ID());
-                    }
+                        C_OrderLine orderItem = new C_OrderLine();
+                        orderItem.setM_Product_ID(product.getM_Product_ID());
 
-                    orderItem.setC_Uom_ID(product.getC_Uom_ID());
-                    orderItem.setProductName(product.getName());
-                    orderItem.setQtyOrdered(1);
-                    orderItem.setM_Pricelist_ID(product.getM_ProductList_ID());
-                    orderItem.setPriceList(product.getPriceList());
-                    orderItem.setPriceActual(product.getPriceStd());
-                    orderItem.setPriceLimit(product.getPriceLimit());
-                    orderItem.setLineNetAmt(product.getPriceStd());
+                        if (product.getM_Locator_ID() == 0) {
+                            orderItem.setM_Warehouse_ID(m_locatorDBAdapter.getM_Locator().getM_Warehouse_ID());
+                            orderItem.setM_Locator_ID(m_locatorDBAdapter.getM_Locator().getM_Locator_ID());
+                        } else {
+                            orderItem.setM_Warehouse_ID(m_locatorDBAdapter.getM_Locator(product.getM_Locator_ID()).getM_Warehouse_ID());
+                            orderItem.setM_Locator_ID(m_locatorDBAdapter.getM_Locator(product.getM_Locator_ID()).getM_Locator_ID());
+                        }
 
-                    c_orderLines.add(orderItem);
+                        orderItem.setC_Uom_ID(product.getC_Uom_ID());
+                        orderItem.setProductName(product.getName());
+                        orderItem.setQtyOrdered(1);
+                        orderItem.setM_Pricelist_ID(product.getM_ProductList_ID());
+                        orderItem.setPriceList(product.getPriceList());
+                        orderItem.setPriceActual(product.getPriceStd());
+                        orderItem.setPriceLimit(product.getPriceLimit());
+                        orderItem.setLineNetAmt(product.getPriceStd());
 
-                    updateTotalView();
+                        c_orderLines.add(orderItem);
 
-                    Fragment f = getFragmentManager().findFragmentById(R.id.article_list);
-                    if (f instanceof OrderListFragment) {
-                        // do something with f
-                        ((OrderListFragment) f).refreshData();
+                        updateTotalView();
+
+                        Fragment f = getFragmentManager().findFragmentById(R.id.article_list);
+                        if (f instanceof ItemScanFragment) {
+                            // do something with f
+                            ((ItemScanFragment) f).refreshData();
+                        }
                     }
                 }
             }
@@ -170,7 +115,6 @@ public class ItemScanActivity extends BaseActivity implements ItemScanFragment.C
     {
         String UserId = SharedPrefUtil.getPersistedData(ApplicationContext.USERID, null);
 
-        //C_Order c_order = new C_Order();
         c_order.setC_BPartner_ID(c_bPartner.getC_BPartner_ID());
         c_order.setCustomerName(c_bPartner.getName());
         c_order.setC_BPartner_Location_ID(c_bPartner.getC_BPartner_Location_ID());
@@ -242,7 +186,7 @@ public class ItemScanActivity extends BaseActivity implements ItemScanFragment.C
         c_order.setTotalLines(subtotal.multiply(new BigDecimal(100).setScale(2, BigDecimal.ROUND_HALF_UP)).intValueExact());
         c_order.setGrandTotal(total.multiply(new BigDecimal(100).setScale(2, BigDecimal.ROUND_HALF_UP)).intValueExact());
 
-        Intent intent = new Intent(this, OrderCheckoutActivity.class);
+        Intent intent = new Intent(this, CheckoutActivity.class);
         intent.putExtra("c_order", c_order);
         intent.putExtra("c_orderItems", c_orderItems);
         intent.putExtra("isCash", isCash);
@@ -265,9 +209,9 @@ public class ItemScanActivity extends BaseActivity implements ItemScanFragment.C
         vTotal.setText("");
 
         Fragment f = getFragmentManager().findFragmentById(R.id.article_list);
-        if (f instanceof OrderListFragment) {
+        if (f instanceof ItemScanFragment) {
             // do something with f
-            ((OrderListFragment) f).refreshData();
+            ((ItemScanFragment) f).refreshData();
         }
     }
 
@@ -313,9 +257,9 @@ public class ItemScanActivity extends BaseActivity implements ItemScanFragment.C
         updateTotalView();
 
         Fragment f = getFragmentManager().findFragmentById(R.id.article_list);
-        if (f instanceof OrderListFragment) {
+        if (f instanceof ItemScanFragment) {
             // do something with f
-            ((OrderListFragment) f).refreshData();
+            ((ItemScanFragment) f).refreshData();
         }
     }
 
@@ -335,23 +279,6 @@ public class ItemScanActivity extends BaseActivity implements ItemScanFragment.C
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
-    /**
-     * Enables the functionality that selected items are automatically highlighted.
-     */
-    private void enableActiveItemState() {
-        OrderListFragment fragmentById = (OrderListFragment) getFragmentManager().findFragmentById(R.id.article_list);
-        fragmentById.getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-    }
-
-    /**
-     * Is the container present? If so, we are using the two-pane layout.
-     *
-     * @return true if the two pane layout is used.
-     */
-    private boolean isTwoPaneLayoutUsed() {
-        return findViewById(R.id.article_detail_container) != null;
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.order_actions, menu);
@@ -366,14 +293,7 @@ public class ItemScanActivity extends BaseActivity implements ItemScanFragment.C
                 return true;
             case R.id.action_checkout:
                 if (c_orderLines.size() > 0) {
-                    if (c_bPartner.getC_BPartner_ID() == 0) {
-                        Intent intent = new Intent(this, CustomerListActivity.class);
-                        startActivityForResult(intent, 2);
-                    }
-                    else
-                    {
-                        updateOrder();
-                    }
+                    updateOrder();
                 }
                 return true;
         }

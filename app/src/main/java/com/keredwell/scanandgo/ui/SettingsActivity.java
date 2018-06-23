@@ -16,11 +16,6 @@ import android.widget.Toast;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * This Activity provides several settings. Activity contains {@link PreferenceFragment} as inner class.
- *
- * Created by Andreas Schrade on 14.12.2015.
- */
 public class SettingsActivity extends BaseActivity {
     private static final String TAG = makeLogTag(SettingsActivity.class);
 

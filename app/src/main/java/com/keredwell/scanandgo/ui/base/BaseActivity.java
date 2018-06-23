@@ -11,15 +11,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.keredwell.scanandgo.ui.*;
-import com.keredwell.scanandgo.ui.order.OrderListActivity;
-import com.keredwell.scanandgo.ui.product.ProductListActivity;
-import com.keredwell.scanandgo.ui.customer.CustomerListActivity;
+import com.keredwell.scanandgo.ui.customer.CustomerDetailActivity;
 import com.keredwell.scanandgo.R;
+import com.keredwell.scanandgo.ui.product.ProductDetailActivity;
+import com.keredwell.scanandgo.ui.scanner.BranchScanActivity;
 import com.keredwell.scanandgo.util.SharedPrefUtil;
 
 import static com.keredwell.scanandgo.util.LogUtil.logD;
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
-
 
 /**
  * The base class for all Activity classes.
@@ -108,16 +107,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     private void goToNavDrawerItem(int item) {
         switch (item) {
             case R.id.nav_order:
-                startActivity(new Intent(this, OrderListActivity.class));
+                startActivity(new Intent(this, BranchScanActivity.class));
                 break;
             case R.id.nav_history:
                 startActivity(new Intent(this, com.keredwell.scanandgo.ui.orderlisting.OrderListActivity.class));
                 break;
             case R.id.nav_customer:
-                startActivity(new Intent(this, CustomerListActivity.class));
-                break;
-            case R.id.nav_product:
-                startActivity(new Intent(this, ProductListActivity.class));
+                startActivity(new Intent(this, CustomerDetailActivity.class));
                 break;
             case R.id.nav_settings:
                 startActivity(new Intent(this, SettingsActivity.class));

@@ -6,10 +6,6 @@ import com.keredwell.scanandgo.ApplicationContext;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 25/12/2017.
- */
-
 public class SharedPrefUtil {
     private static final String TAG = makeLogTag(SharedPrefUtil.class);
 

@@ -13,10 +13,6 @@ import java.util.Date;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 25/11/2017.
- */
-
 public class C_BPartnerWS {
     private static final String TAG = makeLogTag(C_BPartnerWS.class);
 
@@ -64,7 +60,6 @@ public class C_BPartnerWS {
 
                         c_bpartner.setC_BPartner_ID(Long.parseLong(((SoapObject)((SoapObject)((SoapObject)soap.getProperty(0)).getProperty(i)).getProperty(0)).getProperty(0).toString()));
                         c_bpartner.setName(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(1)).getProperty(0).toString());
-                        c_bpartner.setC_BP_Group_ID(Long.parseLong(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(2)).getProperty(0).toString()));
 
                         if (db.getC_BPartner(c_bpartner.getC_BPartner_ID()) == null)
                         {

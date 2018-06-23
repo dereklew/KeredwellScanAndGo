@@ -26,11 +26,6 @@ import java.math.BigDecimal;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Shows the quote detail page.
- *
- * Created by Andreas Schrade on 14.12.2015.
- */
 public class ProductDetailFragment extends BaseFragment {
     private static final String TAG = makeLogTag(ProductDetailFragment.class);
 
@@ -67,9 +62,6 @@ public class ProductDetailFragment extends BaseFragment {
         mItem = new M_Product();
 
         if (arguments != null) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
             mItem.setM_Product_ID(arguments.getInt(ARG_ITEM_ID));
             mItem.setName(arguments.getString(ARG_ITEM_NAME));
             mItem.setPriceStd(arguments.getInt(ARG_ITEM_UNIT_PRICE));
@@ -83,7 +75,6 @@ public class ProductDetailFragment extends BaseFragment {
         View rootView = inflateAndBind(inflater, container, R.layout.fragment_product_detail);
 
         if (!((BaseActivity) getActivity()).providesActivityToolbar()) {
-            // No Toolbar present. Set include_toolbar:
             ((BaseActivity) getActivity()).setToolbar((Toolbar) rootView.findViewById(R.id.toolbar));
         }
 

@@ -20,15 +20,15 @@ import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 public class M_ProductWS {
     private static final String TAG = makeLogTag(M_ProductWS.class);
 
-    public static Boolean WSEvent(String mUser, String mPassword, Date lastUpdatedDate)
+    public static Boolean WSEvent(String upc, String mUser, String mPassword)
     {
         try{
-            SoapObject field = new SoapObject(PropUtil.getProperty("nameSpace"), "field");
-            field.addAttribute("column", "UpdatedDateTime");
-            field.addProperty("val", DateUtil.ConvertToString(lastUpdatedDate));
+            SoapObject UPC = new SoapObject(PropUtil.getProperty("nameSpace"), "field");
+            UPC.addAttribute("column", "UPC");
+            UPC.addProperty("val", upc);
 
             SoapObject dataRow = new SoapObject(PropUtil.getProperty("nameSpace"), "DataRow");
-            dataRow.addSoapObject(field);
+            dataRow.addSoapObject(UPC);
 
             SoapObject modelCRUD = new SoapObject(PropUtil.getProperty("nameSpace"), "ModelCRUD");
             modelCRUD.addProperty("serviceType", PropUtil.getProperty("productServiceType"));
@@ -64,12 +64,11 @@ public class M_ProductWS {
                         c_bpartner.setM_Product_ID(Long.parseLong(((SoapObject)((SoapObject)((SoapObject)soap.getProperty(0)).getProperty(i)).getProperty(0)).getProperty(0).toString()));
                         c_bpartner.setName(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(1)).getProperty(0).toString());
                         if (((SoapObject)((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(2)).getProperty(0) != null) {
-                            c_bpartner.setC_Uom_ID(Long.parseLong(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(2)).getProperty(0).toString()));
+                            c_bpartner.setUPC(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(2)).getProperty(0).toString());
                         }
-                        if (((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(3)).getProperty(0) != null) {
-                            c_bpartner.setM_Product_Category_ID(Long.parseLong(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(3)).getProperty(0).toString()));
+                        if (((SoapObject)((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(3)).getProperty(0) != null) {
+                            c_bpartner.setC_Uom_ID(Long.parseLong(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(3)).getProperty(0).toString()));
                         }
-
                         if (((SoapObject)((SoapObject)((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(4)).getProperty(0) != null) {
                             c_bpartner.setM_Locator_ID(Long.parseLong(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(4)).getProperty(0).toString()));
                         }

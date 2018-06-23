@@ -13,10 +13,6 @@ import java.util.Iterator;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 3/12/2017.
- */
-
 public class SendOrders {
     private static final String TAG = makeLogTag(SendOrders.class);
 
@@ -64,7 +60,6 @@ public class SendOrders {
                     }
                 }
             }
-
             return true;
         } catch (Exception e) {
             LogUtil.logE(TAG, e.getMessage(), e);

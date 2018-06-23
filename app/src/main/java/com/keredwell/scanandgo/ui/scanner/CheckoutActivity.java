@@ -24,13 +24,8 @@ import com.keredwell.scanandgo.data.C_Tax;
 import com.keredwell.scanandgo.dbhelper.C_OrderDBAdapter;
 import com.keredwell.scanandgo.dbhelper.C_OrderLineDBAdapter;
 import com.keredwell.scanandgo.ui.base.BaseActivity;
-import com.keredwell.scanandgo.ui.order.OrderCheckoutActivity;
-import com.keredwell.scanandgo.ui.order.OrderCheckoutFragment;
-import com.keredwell.scanandgo.ui.order.OrderListActivity;
-import com.keredwell.scanandgo.ui.order.PrintDialogFragment;
 import com.keredwell.scanandgo.ui.orderlisting.OrderListPageAdapter;
 import com.keredwell.scanandgo.util.LogUtil;
-import com.keredwell.scanandgo.util.PrintUtil;
 import com.keredwell.scanandgo.util.SharedPrefUtil;
 import com.keredwell.scanandgo.webservice.SendOrders;
 
@@ -189,10 +184,7 @@ public class CheckoutActivity extends BaseActivity implements CheckoutFragment.C
             mOrderSysncTask = null;
             showProgress(false);
 
-            if (success) {
-                PrintDialogFragment dialog = new PrintDialogFragment();
-                dialog.show(getFragmentManager(), "PrintDialogFragment");
-            } else {
+            if (!success) {
                 AlertDialog alertDialog = new AlertDialog.Builder(CheckoutActivity.this).create();
                 alertDialog.setTitle(R.string.synchronization_title);
                 alertDialog.setMessage(getApplicationContext().getString(R.string.synchronization_failed_sync));
@@ -219,23 +211,16 @@ public class CheckoutActivity extends BaseActivity implements CheckoutFragment.C
         TextView vCustomerName = (TextView) findViewById(R.id.customername);
         TextView vCustomerAddress = (TextView) findViewById(R.id.customeraddress);
         TextView vCustomerPostal = (TextView) findViewById(R.id.customerpostal);
-        TextView vCashOrCredit = (TextView) findViewById(R.id.cashorcredit);
 
         vCustomerName.setText(c_bPartner.getName());
         vCustomerAddress.setText(c_bPartner.getAddress());
         vCustomerPostal.setText(c_bPartner.getPostal());
-        if (isCash) {
-            vCashOrCredit.setText(R.string.cash_or_credit_cash);
-        } else
-            vCashOrCredit.setText(R.string.cash_or_credit_credit);
 
         TextView vSubtotal = (TextView) findViewById(R.id.subtotal);
-        TextView vtaxtype = (TextView) findViewById(R.id.taxtype);
         TextView vTax = (TextView) findViewById(R.id.tax);
         TextView vTotal = (TextView) findViewById(R.id.total);
 
         vSubtotal.setText(String.format( "%.2f", BigDecimal.valueOf(c_order.getTotalLines()).movePointLeft(2)));
-        vtaxtype.setText(c_tax.getName());
         vTax.setText(String.format( "%.2f", BigDecimal.valueOf(c_order.getGrandTotal() -  c_order.getTotalLines()).movePointLeft(2)));
         vTotal.setText(String.format( "%.2f", BigDecimal.valueOf(c_order.getGrandTotal()).movePointLeft(2)));
     }
@@ -289,7 +274,7 @@ public class CheckoutActivity extends BaseActivity implements CheckoutFragment.C
      * Enables the functionality that selected items are automatically highlighted.
      */
     private void enableActiveItemState() {
-        OrderCheckoutFragment fragmentById = (OrderCheckoutFragment) getFragmentManager().findFragmentById(R.id.article_list);
+        CheckoutFragment fragmentById = (CheckoutFragment) getFragmentManager().findFragmentById(R.id.article_list);
         fragmentById.getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 

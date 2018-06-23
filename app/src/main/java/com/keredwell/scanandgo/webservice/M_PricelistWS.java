@@ -1,9 +1,9 @@
 package com.keredwell.scanandgo.webservice;
 
 import com.keredwell.scanandgo.ApplicationContext;
-import com.keredwell.scanandgo.data.C_BP_Group;
+import com.keredwell.scanandgo.data.M_Pricelist;
+import com.keredwell.scanandgo.dbhelper.M_PricelistDBAdapter;
 import com.keredwell.scanandgo.util.DateUtil;
-import com.keredwell.scanandgo.dbhelper.C_BP_GroupDBAdapter;
 import com.keredwell.scanandgo.util.LogUtil;
 import com.keredwell.scanandgo.util.PropUtil;
 
@@ -17,21 +17,21 @@ import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
  * Created by Derek on 25/11/2017.
  */
 
-public class C_BP_GroupWS {
-    private static final String TAG = makeLogTag(C_BP_GroupWS.class);
+public class M_PricelistWS {
+    private static final String TAG = makeLogTag(M_PricelistWS.class);
 
-    public static Boolean WSEvent(String mUser, String mPassword, Date lastUpdatedDate)
+    public static Boolean WSEvent(long ad_org_id, String mUser, String mPassword)
     {
         try{
-            SoapObject field = new SoapObject(PropUtil.getProperty("nameSpace"), "field");
-            field.addAttribute("column", "UpdatedDateTime");
-            field.addProperty("val", DateUtil.ConvertToString(lastUpdatedDate));
+            SoapObject AD_Org_ID = new SoapObject(PropUtil.getProperty("nameSpace"), "field");
+            AD_Org_ID.addAttribute("column", "AD_Org_ID");
+            AD_Org_ID.addProperty("val", String.valueOf(ad_org_id));
 
             SoapObject dataRow = new SoapObject(PropUtil.getProperty("nameSpace"), "DataRow");
-            dataRow.addSoapObject(field);
+            dataRow.addSoapObject(AD_Org_ID);
 
             SoapObject modelCRUD = new SoapObject(PropUtil.getProperty("nameSpace"), "ModelCRUD");
-            modelCRUD.addProperty("serviceType", PropUtil.getProperty("bpGroupServiceType"));
+            modelCRUD.addProperty("serviceType", PropUtil.getProperty("pricelistServiceType"));
             modelCRUD.addSoapObject(dataRow);
 
             SoapObject aDLoginRequest = ADLoginRequest.GetADLoginRequest(mUser, mPassword);
@@ -57,21 +57,22 @@ public class C_BP_GroupWS {
             if (soap.getPropertyCount() == 3)
             {
                 if (soap.getProperty(2).toString().equals("true")) {
-                    C_BP_GroupDBAdapter db = new C_BP_GroupDBAdapter(ApplicationContext.getAppContext());
                     for(int i=0; i<Integer.parseInt(soap.getProperty(1).toString()); i++) {
 
-                        C_BP_Group c_bp_group = new C_BP_Group();
+                        M_Pricelist m_pricelist = new M_Pricelist();
 
-                        c_bp_group.setC_BP_Group_ID(Long.parseLong(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(0)).getProperty(0).toString()));
-                        c_bp_group.setName(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(1)).getProperty(0).toString());
+                        m_pricelist.setM_Pricelist_ID(Long.parseLong(((SoapObject)((SoapObject)((SoapObject)soap.getProperty(0)).getProperty(i)).getProperty(0)).getProperty(0).toString()));
+                        m_pricelist.setAd_Org_ID(Long.parseLong(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(1)).getProperty(0).toString()));
+                        m_pricelist.setName(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(2)).getProperty(0).toString());
 
-                        if (db.getC_BP_Group(c_bp_group.getC_BP_Group_ID()) == null)
+                        M_PricelistDBAdapter db = new M_PricelistDBAdapter(ApplicationContext.getAppContext());
+                        if (db.getM_Pricelist(m_pricelist.getM_Pricelist_ID()) == null)
                         {
-                            db.createC_BP_Group(c_bp_group);
+                            db.createM_Pricelist(m_pricelist);
                         }
                         else
                         {
-                            db.updateC_BP_Group(c_bp_group);
+                            db.updateM_Pricelist(m_pricelist);
                         }
                     }
                     return true;

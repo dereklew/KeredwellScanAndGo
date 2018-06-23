@@ -11,9 +11,6 @@ import com.keredwell.scanandgo.R;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * A login screen that offers login via email/password.
- */
 public class LoginActivity extends BaseActivity {
     private static final String TAG = makeLogTag(LoginActivity.class);
 

@@ -17,11 +17,6 @@ import com.keredwell.scanandgo.ui.base.BaseActivity;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Lists all available quotes. This Activity supports a single pane (= smartphones) and a two pane mode (= large screens with >= 600dp width).
- *
- * Created by Andreas Schrade on 14.12.2015.
- */
 public class OrderListActivity extends BaseActivity {
     private static final String TAG = makeLogTag(OrderListActivity.class);
 

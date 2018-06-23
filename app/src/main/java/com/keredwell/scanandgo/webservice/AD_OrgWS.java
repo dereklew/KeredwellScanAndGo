@@ -1,9 +1,11 @@
 package com.keredwell.scanandgo.webservice;
 
 import com.keredwell.scanandgo.ApplicationContext;
+import com.keredwell.scanandgo.data.AD_Org;
+import com.keredwell.scanandgo.data.C_BPartner;
+import com.keredwell.scanandgo.dbhelper.AD_OrgDBAdapter;
+import com.keredwell.scanandgo.dbhelper.C_BPartnerDBAdapter;
 import com.keredwell.scanandgo.util.DateUtil;
-import com.keredwell.scanandgo.data.M_Product_Category;
-import com.keredwell.scanandgo.dbhelper.M_Product_CategoryDBAdapter;
 import com.keredwell.scanandgo.util.LogUtil;
 import com.keredwell.scanandgo.util.PropUtil;
 
@@ -13,25 +15,21 @@ import java.util.Date;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 25/11/2017.
- */
+public class AD_OrgWS {
+    private static final String TAG = makeLogTag(AD_OrgWS.class);
 
-public class M_Product_CategoryWS {
-    private static final String TAG = makeLogTag(M_Product_CategoryWS.class);
-
-    public static Boolean WSEvent(String mUser, String mPassword, Date lastUpdatedDate)
+    public static Boolean WSEvent(String value, String mUser, String mPassword)
     {
         try{
-            SoapObject field = new SoapObject(PropUtil.getProperty("nameSpace"), "field");
-            field.addAttribute("column", "UpdatedDateTime");
-            field.addProperty("val", DateUtil.ConvertToString(lastUpdatedDate));
+            SoapObject Value = new SoapObject(PropUtil.getProperty("nameSpace"), "field");
+            Value.addAttribute("column", "Value");
+            Value.addProperty("val", value);
 
             SoapObject dataRow = new SoapObject(PropUtil.getProperty("nameSpace"), "DataRow");
-            dataRow.addSoapObject(field);
+            dataRow.addSoapObject(Value);
 
             SoapObject modelCRUD = new SoapObject(PropUtil.getProperty("nameSpace"), "ModelCRUD");
-            modelCRUD.addProperty("serviceType", PropUtil.getProperty("productCategoryServiceType"));
+            modelCRUD.addProperty("serviceType", PropUtil.getProperty("adOrgServiceType"));
             modelCRUD.addSoapObject(dataRow);
 
             SoapObject aDLoginRequest = ADLoginRequest.GetADLoginRequest(mUser, mPassword);
@@ -57,21 +55,22 @@ public class M_Product_CategoryWS {
             if (soap.getPropertyCount() == 3)
             {
                 if (soap.getProperty(2).toString().equals("true")) {
+                    AD_OrgDBAdapter db = new AD_OrgDBAdapter(ApplicationContext.getAppContext());
                     for(int i=0; i<Integer.parseInt(soap.getProperty(1).toString()); i++) {
 
-                        M_Product_Category m_product_category = new M_Product_Category();
+                        AD_Org ad_org = new AD_Org();
 
-                        m_product_category.setName(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(0)).getProperty(0).toString());
-                        m_product_category.setM_Product_Category_ID(Long.parseLong(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(1)).getProperty(0).toString()));
+                        ad_org.setAD_Org_ID(Long.parseLong(((SoapObject)((SoapObject)((SoapObject)soap.getProperty(0)).getProperty(i)).getProperty(0)).getProperty(0).toString()));
+                        ad_org.setValue(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(1)).getProperty(0).toString());
+                        ad_org.setName(((SoapObject) ((SoapObject) ((SoapObject) soap.getProperty(0)).getProperty(i)).getProperty(2)).getProperty(0).toString());
 
-                        M_Product_CategoryDBAdapter db = new M_Product_CategoryDBAdapter(ApplicationContext.getAppContext());
-                        if (db.getM_Product_Category(m_product_category.getM_Product_Category_ID()) == null)
+                        if (db.getAD_Org(ad_org.getAD_Org_ID()) == null)
                         {
-                            db.createM_Product_Category(m_product_category);
+                            db.createAD_Org(ad_org);
                         }
                         else
                         {
-                            db.updateM_Product_Category(m_product_category);
+                            db.updateAD_Org(ad_org);
                         }
                     }
                     return true;

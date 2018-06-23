@@ -23,17 +23,13 @@ import com.keredwell.scanandgo.dbhelper.C_BPartnerDBAdapter;
 import com.keredwell.scanandgo.dbhelper.C_OrderDBAdapter;
 import com.keredwell.scanandgo.dbhelper.C_OrderLineDBAdapter;
 import com.keredwell.scanandgo.dbhelper.C_TaxDBAdapter;
+import com.keredwell.scanandgo.ui.scanner.ItemScanActivity;
 import com.keredwell.scanandgo.util.DateUtil;
 
 import java.util.ArrayList;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Shows a list of all available quotes.
- * <p/>
- * Created by Andreas Schrade on 14.12.2015.
- */
 public class OrderListInCompleteFragment extends ListFragment {
     private static final String TAG = makeLogTag(OrderListInCompleteFragment.class);
 
@@ -84,7 +80,7 @@ public class OrderListInCompleteFragment extends ListFragment {
 
         ArrayList<C_OrderLine> orderItems = orderLineDBAdapter.getAllC_OrderLinesByOrderId(mItem.get(position).getID());
 
-        Intent intent = new Intent(getActivity(), com.keredwell.scanandgo.ui.order.OrderListActivity.class);
+        Intent intent = new Intent(getActivity(), ItemScanActivity.class);
         intent.putExtra("c_order", mItem.get(position));
         intent.putExtra("c_orderItems", orderItems);
         intent.putExtra("isCash", mItem.get(position).getIsCash());

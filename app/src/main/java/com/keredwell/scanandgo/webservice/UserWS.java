@@ -8,10 +8,6 @@ import org.ksoap2.serialization.SoapObject;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 25/11/2017.
- */
-
 public class UserWS {
     private static final String TAG = makeLogTag(UserWS.class);
 
@@ -38,7 +34,6 @@ public class UserWS {
             SoapObject queryData = new SoapObject(PropUtil.getProperty("nameSpace"), "queryData");
             queryData.addSoapObject(modelCRUDRequest);
 
-            //request to server and get Soap Primitive response
             return parseXml(WebServiceCall.callWSThreadSoapPrimitive(queryData));
 
         } catch (Exception e) {
@@ -56,7 +51,6 @@ public class UserWS {
                 user.setID(((SoapObject)((SoapObject)((SoapObject)soap.getProperty(0)).getProperty(0)).getProperty(0)).getProperty(0).toString());
                 user.setName(((SoapObject)((SoapObject)((SoapObject)soap.getProperty(0)).getProperty(0)).getProperty(1)).getProperty(0).toString());
             }
-
             return user;
 
         } catch (Exception e) {

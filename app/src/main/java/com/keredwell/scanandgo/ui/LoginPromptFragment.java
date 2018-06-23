@@ -27,7 +27,7 @@ import com.keredwell.scanandgo.ApplicationContext;
 import com.keredwell.scanandgo.R;
 import com.keredwell.scanandgo.data.User;
 import com.keredwell.scanandgo.ui.base.BaseFragment;
-import com.keredwell.scanandgo.ui.order.OrderListActivity;
+import com.keredwell.scanandgo.ui.scanner.BranchScanActivity;
 import com.keredwell.scanandgo.util.LogUtil;
 import com.keredwell.scanandgo.util.SharedPrefUtil;
 import com.keredwell.scanandgo.webservice.UserWS;
@@ -266,7 +266,7 @@ public class LoginPromptFragment extends BaseFragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(getActivity()
-                                        , OrderListActivity.class);
+                                        , BranchScanActivity.class);
                                 startActivity(intent);
                             }
                         });

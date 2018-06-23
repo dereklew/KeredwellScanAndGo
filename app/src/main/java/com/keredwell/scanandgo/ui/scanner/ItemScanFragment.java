@@ -16,8 +16,6 @@ import android.widget.TextView;
 
 import com.keredwell.scanandgo.R;
 import com.keredwell.scanandgo.data.C_OrderLine;
-import com.keredwell.scanandgo.ui.order.OrderListActivity;
-import com.keredwell.scanandgo.ui.order.OrderListFragment;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -28,8 +26,6 @@ public class ItemScanFragment extends ListFragment {
     private static final String TAG = makeLogTag(ItemScanFragment.class);
 
     private ItemScanFragment.Callback callback = orderCallback;
-
-    //private MyListAdapter myListAdapter;
 
     private ArrayList<C_OrderLine> mItem = new ArrayList<>();
     /**
@@ -66,7 +62,6 @@ public class ItemScanFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        // notify callback about the selected list item
         callback.onItemSelected(position);
     }
 
@@ -143,7 +138,7 @@ public class ItemScanFragment extends ListFragment {
                     item.setQtyOrdered(item.getQtyOrdered() + 1);
                     item.setLineNetAmt(item.getPriceActual() * item.getQtyOrdered());
                     mItem.set(position, item);
-                    ((OrderListActivity)getActivity()).updateListOrderItems(mItem);
+                    ((ItemScanActivity)getActivity()).updateListOrderItems(mItem);
                 }
             });
 

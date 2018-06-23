@@ -20,15 +20,20 @@ import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 public class M_ProductPriceWS {
     private static final String TAG = makeLogTag(M_ProductPriceWS.class);
 
-    public static Boolean WSEvent(String mUser, String mPassword, Date lastUpdatedDate)
+    public static Boolean WSEvent(long m_product_id, long m_pricelist_version_id, String mUser, String mPassword)
     {
         try{
-            SoapObject field = new SoapObject(PropUtil.getProperty("nameSpace"), "field");
-            field.addAttribute("column", "UpdatedDateTime");
-            field.addProperty("val", DateUtil.ConvertToString(lastUpdatedDate));
+            SoapObject M_Product_Id = new SoapObject(PropUtil.getProperty("nameSpace"), "field");
+            M_Product_Id.addAttribute("column", "M_Product_Id");
+            M_Product_Id.addProperty("val", String.valueOf(m_product_id));
+
+            SoapObject M_Pricelist_Version_Id = new SoapObject(PropUtil.getProperty("nameSpace"), "field");
+            M_Pricelist_Version_Id.addAttribute("column", "M_Pricelist_Version_Id");
+            M_Pricelist_Version_Id.addProperty("val", String.valueOf(m_pricelist_version_id));
 
             SoapObject dataRow = new SoapObject(PropUtil.getProperty("nameSpace"), "DataRow");
-            dataRow.addSoapObject(field);
+            dataRow.addSoapObject(M_Product_Id);
+            dataRow.addSoapObject(M_Pricelist_Version_Id);
 
             SoapObject modelCRUD = new SoapObject(PropUtil.getProperty("nameSpace"), "ModelCRUD");
             modelCRUD.addProperty("serviceType", PropUtil.getProperty("productPriceServiceType"));

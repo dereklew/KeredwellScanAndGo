@@ -20,15 +20,15 @@ import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 public class M_LocatorWS {
     private static final String TAG = makeLogTag(M_LocatorWS.class);
 
-    public static Boolean WSEvent(String mUser, String mPassword, Date lastUpdatedDate)
+    public static Boolean WSEvent(long m_locator_id, String mUser, String mPassword)
     {
         try{
-            SoapObject field = new SoapObject(PropUtil.getProperty("nameSpace"), "field");
-            field.addAttribute("column", "UpdatedDateTime");
-            field.addProperty("val", DateUtil.ConvertToString(lastUpdatedDate));
+            SoapObject M_Locator_ID = new SoapObject(PropUtil.getProperty("nameSpace"), "field");
+            M_Locator_ID.addAttribute("column", "M_Locator_ID");
+            M_Locator_ID.addProperty("val", String.valueOf(m_locator_id));
 
             SoapObject dataRow = new SoapObject(PropUtil.getProperty("nameSpace"), "DataRow");
-            dataRow.addSoapObject(field);
+            dataRow.addSoapObject(M_Locator_ID);
 
             SoapObject modelCRUD = new SoapObject(PropUtil.getProperty("nameSpace"), "ModelCRUD");
             modelCRUD.addProperty("serviceType", PropUtil.getProperty("locatorServiceType"));

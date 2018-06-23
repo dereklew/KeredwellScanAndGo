@@ -13,10 +13,6 @@ import java.util.Date;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * Created by Derek on 25/11/2017.
- */
-
 public class C_BPartner_LocationWS {
     private static final String TAG = makeLogTag(C_BPartner_LocationWS.class);
 

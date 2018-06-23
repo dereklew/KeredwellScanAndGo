@@ -18,41 +18,28 @@ import android.view.View;
 
 import com.keredwell.scanandgo.ApplicationContext;
 import com.keredwell.scanandgo.R;
+import com.keredwell.scanandgo.ui.scanner.BranchScanActivity;
 import com.keredwell.scanandgo.util.DateUtil;
 import com.keredwell.scanandgo.ui.base.BaseActivity;
-import com.keredwell.scanandgo.ui.order.OrderListActivity;
 import com.keredwell.scanandgo.util.LogUtil;
 import com.keredwell.scanandgo.util.PropUtil;
 import com.keredwell.scanandgo.util.SharedPrefUtil;
-import com.keredwell.scanandgo.webservice.C_BP_GroupWS;
 import com.keredwell.scanandgo.webservice.C_BPartnerWS;
 import com.keredwell.scanandgo.webservice.C_BPartner_LocationWS;
 import com.keredwell.scanandgo.webservice.C_LocationWS;
 import com.keredwell.scanandgo.webservice.C_OrderLineReceiveWS;
 import com.keredwell.scanandgo.webservice.C_OrderReceiveWS;
 import com.keredwell.scanandgo.webservice.C_TaxWS;
-import com.keredwell.scanandgo.webservice.M_LocatorWS;
-import com.keredwell.scanandgo.webservice.M_Pricelist_VersionWS;
-import com.keredwell.scanandgo.webservice.M_ProductPriceWS;
-import com.keredwell.scanandgo.webservice.M_ProductWS;
-import com.keredwell.scanandgo.webservice.M_Product_CategoryWS;
+
 import com.keredwell.scanandgo.webservice.SendOrders;
 
 import java.util.Date;
 
 import static com.keredwell.scanandgo.util.LogUtil.makeLogTag;
 
-/**
- * This Activity provides several settings. Activity contains {@link PreferenceFragment} as inner class.
- *
- * Created by Andreas Schrade on 14.12.2015.
- */
 public class SynchronizationActivity extends BaseActivity {
     private static final String TAG = makeLogTag(SynchronizationActivity.class);
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
     private SyncTask mSyncTask = null;
 
     private View mProgressView;
@@ -133,8 +120,6 @@ public class SynchronizationActivity extends BaseActivity {
                 }
             });
         } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mSyncFormView.setVisibility(show ? View.GONE : View.VISIBLE);
             mFabView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -156,8 +141,6 @@ public class SynchronizationActivity extends BaseActivity {
                 String mUserID = SharedPrefUtil.getPersistedData(ApplicationContext.USERID, null);
 
                 Date lastUpdatedDate = DateUtil.ConvertToDate(PropUtil.getProperty("lastUpdatedatetime"));
-                if (C_BP_GroupWS.WSEvent(mUser, mPassword, lastUpdatedDate) == false)
-                    return false;
 
                 if (C_BPartner_LocationWS.WSEvent(mUser, mPassword, lastUpdatedDate) == false)
                     return false;
@@ -166,21 +149,6 @@ public class SynchronizationActivity extends BaseActivity {
                     return false;
 
                 if (C_LocationWS.WSEvent(mUser, mPassword, lastUpdatedDate) == false)
-                    return false;
-
-                if (M_Pricelist_VersionWS.WSEvent(mUser, mPassword, lastUpdatedDate) == false)
-                    return false;
-
-                if (M_Product_CategoryWS.WSEvent(mUser, mPassword, lastUpdatedDate) == false)
-                    return false;
-
-                if (M_ProductPriceWS.WSEvent(mUser, mPassword, lastUpdatedDate) == false)
-                    return false;
-
-                if (M_ProductWS.WSEvent(mUser, mPassword, lastUpdatedDate) == false)
-                    return false;
-
-                if (M_LocatorWS.WSEvent(mUser, mPassword, lastUpdatedDate) == false)
                     return false;
 
                 if (C_TaxWS.WSEvent(mUser, mPassword, lastUpdatedDate) == false)
@@ -221,7 +189,7 @@ public class SynchronizationActivity extends BaseActivity {
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             if (success) {
-                                Intent intent = new Intent(SynchronizationActivity.this, OrderListActivity.class);
+                                Intent intent = new Intent(SynchronizationActivity.this, BranchScanActivity.class);
                                 startActivity(intent);
                             }
                         }
